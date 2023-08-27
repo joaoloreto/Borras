@@ -57,11 +57,14 @@ public class CommandHandler : ICommandHandler
         var context = new ShardedCommandContext(_client, msg);
 
         var markPos = 0;
-        Console.WriteLine(msg.Content);
-        Console.WriteLine("code got to content write");
-        if (msg.HasCharPrefix('!', ref markPos) || msg.HasCharPrefix('?', ref markPos))
+        await Logger.Log(LogSeverity.Info, $"Trying to execute command", msg.ToString());
+
+        if (msg.HasCharPrefix('!', ref markPos) || msg.HasCharPrefix('?', ref markPos) || msg.HasCharPrefix('/', ref markPos))
         {
+            var a = InteractionType.ApplicationCommand;
             var result = await _commands.ExecuteAsync(context, markPos, Bootstrapper.ServiceProvider);
         }
+        await Logger.Log(LogSeverity.Info, $"Command execution successful", msg.ToString());
+
     }
 }

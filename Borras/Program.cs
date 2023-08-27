@@ -8,12 +8,13 @@ using Borras.Init;
 using Borras.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Security.Cryptography.X509Certificates;
 
 var config = new ConfigurationBuilder()
     .AddJsonFile("C:\\Users\\jones88\\source\\repos\\Borras\\Borras\\appsettings.json")
     .AddEnvironmentVariables()
     .Build();
-var client = new DiscordShardedClient();
+var client = new DiscordShardedClient(new DiscordSocketConfig { GatewayIntents = Discord.GatewayIntents.All });
 var commands = new CommandService(new CommandServiceConfig
 {
     // Again, log level:
@@ -49,7 +50,6 @@ async Task MainAsync()
     }
 
     await client.LoginAsync(TokenType.Bot, token);
-    Console.WriteLine("Login successful!");
     await client.StartAsync();
 
     // Wait infinitely so your bot actually stays connected.
