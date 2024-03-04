@@ -9,7 +9,7 @@ using Borras.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
-string path = Directory.GetParent(Environment.CurrentDirectory).Parent.ToString();
+string path = Directory.GetParent(Environment.CurrentDirectory).ToString();
 var config = new ConfigurationBuilder()
     .AddJsonFile(path + "/appsettings.json")
     .AddEnvironmentVariables()
