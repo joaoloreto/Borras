@@ -11,6 +11,7 @@ public class AudioService
     public async Task JoinAudio(IGuild guild, IVoiceChannel target)
     {
         IAudioClient client;
+        
         if (ConnectedChannels.TryGetValue(guild.Id, out client))
         {
             return;
@@ -26,7 +27,7 @@ public class AudioService
         {
             // If you add a method to log happenings from this service,
             // you can uncomment these commented lines to make use of that.
-            //await Log(LogSeverity.Info, $"Connected to voice on {guild.Name}.");
+            await Logger.Log(LogSeverity.Info, $"Connected to voice on {guild.Name}.", "Successfully");
         }
     }
 
