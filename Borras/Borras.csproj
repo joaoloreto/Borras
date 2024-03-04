@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="appsettings.json" />
     <None Remove="libsodium\libsodium.dll" />
   </ItemGroup>
 
