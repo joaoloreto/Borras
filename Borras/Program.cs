@@ -9,9 +9,9 @@ using Borras.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
-string path = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.ToString();
+string path = Directory.GetParent(Environment.CurrentDirectory).Parent.ToString();
 var config = new ConfigurationBuilder()
-    .AddJsonFile(path + "\\appsettings.json")
+    .AddJsonFile(path + "/appsettings.json")
     .AddEnvironmentVariables()
     .Build();
 var client = new DiscordShardedClient(new DiscordSocketConfig { GatewayIntents = Discord.GatewayIntents.All });
