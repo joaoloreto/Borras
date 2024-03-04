@@ -1,19 +1,15 @@
 ﻿using Borras.Common;
-using Borras.Services;
 using Discord;
-using Discord.Audio;
 using Discord.Commands;
-using System.Security.Cryptography.X509Certificates;
 using Nhl.Api;
 using RunMode = Discord.Commands.RunMode;
 using Nhl.Api.Models.Standing;
-using Nhl.Api.Models.Team;
+using Discord.WebSocket;
 
 namespace Borras.Modules;
 
 public class MainModule : ModuleBase<ShardedCommandContext>
 {
-    public CommandService CommandService { get; set; }
 
     [Command("hello", RunMode = RunMode.Async)]
     public async Task Hello()
@@ -43,24 +39,52 @@ public class MainModule : ModuleBase<ShardedCommandContext>
         try
         {
             NhlApi nhlapi = new();
+            DateOnly today = DateOnly.FromDateTime(DateTime.Now);
             await Logger.Log(LogSeverity.Info, $"{Context.User.Username} tried to get nhl standings data", "Successfully");
-            List<Records> table = nhlapi.GetLeagueStandingsAsync().Result;
+            //List<TeamSeasonStatistics> table = nhlapi.GetLeagueStandingsSeasonInformationAsync().Result;
+            List<Standing> table = nhlapi.GetLeagueStandingsByDateAsync(today).Result.Standings;
             string standings = "";
             //standings += "Metropolitan Division" + System.Environment.NewLine;
-            foreach (Records record in table)
+            foreach (Standing standing in table)
             {
-                foreach (TeamRecord teamRecord in record.TeamRecords) {
-                    if (teamRecord.DivisionRank.Equals("1"))
-                        standings += System.Environment.NewLine + record.Division.Name + " division" + System.Environment.NewLine;
-                    standings += teamRecord.DivisionRank +  ". " + teamRecord.Team.Name + " | " + teamRecord.Points + " pts" + System.Environment.NewLine;
-                }
-                    
+
+                //if (standing.DivisionAbbrev.Equals("A"))
+                //{
+                    //standings += Environment.NewLine + standing.DivisionName + " division" + Environment.NewLine;
+                    standings += standing.TeamName.Default + " | " + standing.Points + " pts" + Environment.NewLine;
+                //}
             }
             await Context.Message.ReplyAsync($"{standings}");
         }
         catch (Exception ex)
         {
-            await Logger.Log(LogSeverity.Info, $"{Context.User.Username} failed to get nhl standings data", "Successfully");
+            await Logger.Log(LogSeverity.Info, $"{Context.User.Username} failed to get nhl standings data", ex.Message);
         }
         }
+
+    [Command("dropdown", RunMode = RunMode.Async)]
+    public async Task dropDown()
+    {
+        
+        var menuBuilder = new SelectMenuBuilder()
+        .WithPlaceholder("Select an option")
+        .WithCustomId("menu-1")
+        .WithMinValues(1)
+        .WithMaxValues(1)
+        .AddOption("Option A", "opt-a", "Option B is lying!")
+        .AddOption("Option B", "opt-b", "Option A is telling the truth!");
+
+        var builder = new ComponentBuilder()
+            .WithSelectMenu(menuBuilder);
+
+        await ReplyAsync("Whos really lying?", components: builder.Build());
+        Context.Client.SelectMenuExecuted += MyMenuHandler;
+
+
     }
+    public async Task MyMenuHandler(SocketMessageComponent arg)
+    {
+        var text = string.Join(", ", arg.Data.Values);
+        await arg.RespondAsync($"You have selected {text}");
+    }
+}

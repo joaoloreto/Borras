@@ -8,10 +8,10 @@ using Borras.Init;
 using Borras.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Security.Cryptography.X509Certificates;
-
+using System.Reflection;
+string path = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.ToString();
 var config = new ConfigurationBuilder()
-    .AddJsonFile("C:\\Users\\jones88\\source\\repos\\Borras\\Borras\\appsettings.json")
+    .AddJsonFile(path + "\\appsettings.json")
     .AddEnvironmentVariables()
     .Build();
 var client = new DiscordShardedClient(new DiscordSocketConfig { GatewayIntents = Discord.GatewayIntents.All });
@@ -51,9 +51,20 @@ async Task MainAsync()
 
     await client.LoginAsync(TokenType.Bot, token);
     await client.StartAsync();
+    //Listing all commands in the logs
+    var commandsList = commands.Commands;
+    var groupedCommands = commandsList.GroupBy(command => command.Module.Name);
+
+    foreach (var group in groupedCommands)
+    {
+        await Logger.Log(LogSeverity.Info, $"Module: {group.Key}", "Successfully");
+
+        foreach (var command in group)
+        {
+            await Logger.Log(LogSeverity.Info, $"  Command: {command.Name}, Summary: {command.Summary}", "command");
+        }
+    }
 
     // Wait infinitely so your bot actually stays connected.
     await Task.Delay(Timeout.Infinite);
 }
-
-Console.WriteLine("Hello, World!");
