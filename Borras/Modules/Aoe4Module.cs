@@ -34,7 +34,7 @@ namespace Borras.Modules
                 Context.Client.SelectMenuExecuted += MyMenuHandler;
             }catch (Exception ex) 
             {
-                await Logger.Log(LogSeverity.Error, "Attempt to get AoE4 player data/n " + ex.Message, "Failed");
+                await Logger.Log(LogSeverity.Error, "Attempt to get AoE4 player data " + Environment.NewLine + ex.Message, "Failed");
                 await Context.Message.ReplyAsync("Error while selecting an option");
             }
             
