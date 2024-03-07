@@ -59,13 +59,18 @@ public class CommandHandler : ICommandHandler
         var markPos = 0;
         await Logger.Log(LogSeverity.Info, $"Trying to execute command", msg.ToString());
 
-        if (msg.HasCharPrefix('!', ref markPos) || msg.HasCharPrefix('/', ref markPos) /*|| msg.HasCharPrefix('/', ref markPos)*/)
+        if (msg.HasCharPrefix('!', ref markPos) /*|| msg.HasCharPrefix('/', ref markPos)*/)
         {
             var a = InteractionType.ApplicationCommand;
             var result = await _commands.ExecuteAsync(context, markPos, Bootstrapper.ServiceProvider);
 
             await Logger.Log(LogSeverity.Info, $"Command execution successful", msg.ToString());
         }
+        else if (msg.HasCharPrefix('/', ref markPos))
+        {
+            var a = InteractionType.ApplicationCommand;
+            var result = await _commands.ExecuteAsync(context, markPos, Bootstrapper.ServiceProvider);
 
+        }
     }
 }

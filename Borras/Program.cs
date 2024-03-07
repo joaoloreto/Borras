@@ -8,13 +8,13 @@ using Borras.Init;
 using Borras.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
+
 string path = Directory.GetParent(Environment.CurrentDirectory).ToString();
 var config = new ConfigurationBuilder()
     .AddJsonFile(path + "/appsettings.json")
     .AddEnvironmentVariables()
     .Build();
-var client = new DiscordShardedClient(new DiscordSocketConfig { GatewayIntents = Discord.GatewayIntents.All });
+var client = new DiscordShardedClient(new DiscordSocketConfig { GatewayIntents = GatewayIntents.All });
 var commands = new CommandService(new CommandServiceConfig
 {
     // Again, log level:
@@ -38,6 +38,7 @@ async Task MainAsync()
 
     client.ShardReady += async shard =>
     {
+        
         await Logger.Log(LogSeverity.Info, "ShardReady", $"Shard Number {shard.ShardId} is connected and ready!");
     };
 
