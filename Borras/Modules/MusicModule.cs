@@ -79,13 +79,11 @@ public class MusicModule : ModuleBase<ShardedCommandContext>
 				await ReplyAsync("Failed to convert the audio file.");
 				return;
 			}
-		await Logger.Log(LogSeverity.Info, "Converted audio", "Successful");
+		
 			// Play the PCM audio in the voice channel
-
-
 			var audioClient = await voiceChannel.ConnectAsync();
-
-			var audioOutStream = audioClient.CreatePCMStream(AudioApplication.Music);
+        await Logger.Log(LogSeverity.Info, "Converted audio", "Successful");
+        var audioOutStream = audioClient.CreatePCMStream(AudioApplication.Music);
         await Logger.Log(LogSeverity.Info, audioOutStream.CanRead.ToString(), "Successful");
         try
 		{
