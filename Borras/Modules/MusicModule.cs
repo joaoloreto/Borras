@@ -84,11 +84,11 @@ public class MusicModule : ModuleBase<ShardedCommandContext>
 
 
 			var audioClient = await voiceChannel.ConnectAsync();
-			var audioOutStream = audioClient.CreatePCMStream(AudioApplication.Mixed);
+			var audioOutStream = audioClient.CreatePCMStream(AudioApplication.Music);
 
 			using (var audioFileStream = File.OpenRead(convertedAudioPath))
 			{
-			await Logger.Log(LogSeverity.Info,audioFileStream.CanRead.ToString(),"Successful");
+				await Logger.Log(LogSeverity.Info,audioFileStream.CanRead.ToString(),"Successful");
 				await audioFileStream.CopyToAsync(audioOutStream);
 				await audioOutStream.FlushAsync();
 			}
