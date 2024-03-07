@@ -71,7 +71,7 @@ public class MusicModule : ModuleBase<ShardedCommandContext>
 		var streamManifest = await youtubeClient.Videos.Streams.GetManifestAsync(videoUrl);
 		var audioStreamInfo = streamManifest.GetAudioOnlyStreams().GetWithHighestBitrate();
 		var convertedAudioPath = ConvertWebMToPCM(audioStreamInfo.Url);
-		
+		await Logger.Log(LogSeverity.Info, convertedAudioPath, "Successful");
 		
 			//Play the audio in the Discord voice channel
 			if (string.IsNullOrEmpty(convertedAudioPath))
@@ -79,15 +79,16 @@ public class MusicModule : ModuleBase<ShardedCommandContext>
 				await ReplyAsync("Failed to convert the audio file.");
 				return;
 			}
-
+		await Logger.Log(LogSeverity.Info, "Converted audio", "Successful");
 			// Play the PCM audio in the voice channel
 
 
 			var audioClient = await voiceChannel.ConnectAsync();
-			var audioOutStream = audioClient.CreatePCMStream(AudioApplication.Music);
+			var audioOutStream = audioClient.CreatePCMStream(AudioApplication.Mixed);
 
 			using (var audioFileStream = File.OpenRead(convertedAudioPath))
 			{
+			await Logger.Log(LogSeverity.Info,audioFileStream.CanRead.ToString(),"Successful");
 				await audioFileStream.CopyToAsync(audioOutStream);
 				await audioOutStream.FlushAsync();
 			}
