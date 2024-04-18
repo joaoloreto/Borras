@@ -66,11 +66,5 @@ public class CommandHandler : ICommandHandler
 
             await Logger.Log(LogSeverity.Info, $"Command execution successful", msg.ToString());
         }
-        else if (msg.HasCharPrefix('/', ref markPos))
-        {
-            var a = InteractionType.ApplicationCommand;
-            var result = await _commands.ExecuteAsync(context, markPos, Bootstrapper.ServiceProvider);
-
-        }
     }
 }
