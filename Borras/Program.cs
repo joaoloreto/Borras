@@ -44,8 +44,8 @@ async Task MainAsync()
     
     client.ShardReady += async shard =>
     { 
-        await sCommands.RegisterCommandsToGuildAsync(676748495079604225);
-        //await sCommands.RegisterCommandsToGuildAsync(722072405899477042);
+        //await sCommands.RegisterCommandsToGuildAsync(676748495079604225);
+        await sCommands.RegisterCommandsToGuildAsync(722072405899477042);
         
         await Logger.Log(LogSeverity.Info, "ShardReady", "Slash Commands Registered");
 
