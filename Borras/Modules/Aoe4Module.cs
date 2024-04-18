@@ -1,13 +1,20 @@
 ﻿using Borras.Common;
 using Discord;
-using Discord.Commands;
-using Discord.WebSocket;
+using Discord.Interactions;
 using System.Text.Json;
 
 namespace Borras.Modules
 {
-    public class Aoe4Module : ModuleBase<ShardedCommandContext>
+    public class Aoe4Module : InteractionModuleBase<ShardedInteractionContext>
     {
+        [SlashCommand("aoe4soloelo", "Gets the 1v1 elo of the id you send")]
+        public async Task Aoe4SoloElo(string arg)
+        {
+            await Logger.Log(LogSeverity.Info, $"{Context.User.Username} picked solo rank", "Successful");
+            await ReplyAsync(GetAoE4Data(arg).Result.RootElement.GetProperty("modes").GetProperty("rm_solo").GetProperty("rating").ToString());
+
+        }
+        /*
         // A command that gets your rating on all game modes
         // todo: all several qm ratings
         [Command("aoe4rank", RunMode = RunMode.Async)]
@@ -18,6 +25,7 @@ namespace Borras.Modules
         .WithPlaceholder("Select solo or team rank")
         .WithCustomId(arg)
         .WithMinValues(1)
+
         .WithMaxValues(1)
         .AddOption("Ranked Solo", "0", "Your solo rank")
         .AddOption("Ranked Team", "1", "Your team rank")
@@ -78,7 +86,7 @@ namespace Borras.Modules
                     break;
             }  
         }
-
+        */
         // The function that gets the player's data using the AOE4WorldAPI (huge thanks to the AOE4World.com folks)
         // This gets a json with all the data from a specific player id passed on as arg
         private async Task<JsonDocument> GetAoE4Data(string arg)

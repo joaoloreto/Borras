@@ -1,37 +1,37 @@
 ﻿using Borras.Common;
 using Discord;
 using Discord.Commands;
-using Nhl.Api;
 using RunMode = Discord.Commands.RunMode;
-using Nhl.Api.Models.Standing;
 using Discord.WebSocket;
+using Discord.Interactions;
 
 namespace Borras.Modules;
 
-public class MainModule : ModuleBase<ShardedCommandContext>
+public class MainModule : InteractionModuleBase<ShardedInteractionContext>
 {
 
-    [Command("hello", RunMode = RunMode.Async)]
+    [SlashCommand("hello", "Says hello back at you")]
     public async Task Hello()
     {
         await Logger.Log(LogSeverity.Info, $"{Context.User.Username} tried to say hello", "Successfully");
-        await Context.Message.ReplyAsync($"Hello {Context.User.Username}. Nice to meet you!");
+        await RespondAsync($"Hello {Context.User.Username}. Nice to meet you!");
     }
 
-    [Command("borra", RunMode = RunMode.Async)]
+    [SlashCommand("borra","Calls someone a borras")]
     public async Task Borra(string arg)
     {
         if (!arg.StartsWith("<@"))
         {
             await Logger.Log(LogSeverity.Info, $"{Context.User.Username} tried to call someone a borras", "Unsuccessfully");
-            await Context.Message.ReplyAsync($"{Context.User.Username}. Give me a user name!");
+            await RespondAsync($"{Context.User.Username}. Give me a user name!");
         }
         else
         {
             await Logger.Log(LogSeverity.Info, $"{Context.User.Username} tried to call someone a borras", "Successfully");
-            await Context.Message.ReplyAsync($"{arg} é um borra piças");
+            await RespondAsync($"{arg} é um borra piças");
         }
     }
+    /*
     [Command("nhlstandings", RunMode = RunMode.Async)]
         
         public async Task NHLStandings()
@@ -61,7 +61,7 @@ public class MainModule : ModuleBase<ShardedCommandContext>
             await Logger.Log(LogSeverity.Info, $"{Context.User.Username} failed to get nhl standings data", ex.Message);
         }
         }
-
+    */
     [Command("dropdown", RunMode = RunMode.Async)]
     public async Task dropDown()
     {

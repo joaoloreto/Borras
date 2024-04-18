@@ -1,25 +1,16 @@
 ﻿using Borras.Common;
 using Discord;
 using Discord.Audio;
-using Discord.Commands;
 using Discord.Interactions;
 using System.Diagnostics;
 using YoutubeExplode;
 using YoutubeExplode.Videos.Streams;
-using RunMode = Discord.Commands.RunMode;
 
 namespace Borras.Modules;
-public class MusicModule : ModuleBase<ShardedCommandContext>
+public class MusicModule : InteractionModuleBase<ShardedInteractionContext>
 {
-	public CommandService CommandService { get; set; }
 
-	[SlashCommand("test","just a test")]
-	public async Task TestCommand(string arg)
-	{
-		await Context.Message.ReplyAsync("Test Sucessful");
-	}
-
-	[Command("join", RunMode = RunMode.Async)]
+	[SlashCommand("join","Have the bot join the current discord channel the user is on")]
 	public async Task Join()
 	{
 		//checking if we're in a voice channel
@@ -38,17 +29,17 @@ public class MusicModule : ModuleBase<ShardedCommandContext>
 		await Logger.Log(LogSeverity.Info, $"Attempting to connect to voice channel", "Successful");
 	}
 
-	[Command("disconnect", RunMode = RunMode.Async)]
+	[SlashCommand("disconnect","Have the bot disconnect from the current channel it is on, requires the bot to be connected")]
 	public async Task Disconnect()
 	{
 		//just disconnect, no checks
 		IVoiceChannel channel = (Context.User as IVoiceState).VoiceChannel;
 		await channel.DisconnectAsync();
-		await Context.Message.ReplyAsync("Disconnected");
+		await RespondAsync("Disconnected");
 	}
 
 
-	[Command("yt", RunMode = RunMode.Async)]
+	[SlashCommand("play", "Join the current channel and play a youtube video as sound only")]
 	public async Task PlayAsync(string videoUrl)
 	{
 		//checking to see if we're in a channel
@@ -108,7 +99,7 @@ public class MusicModule : ModuleBase<ShardedCommandContext>
 		IAudioClient client = await channel.ConnectAsync();
 
 		await Logger.Log(LogSeverity.Info, $"Connecting to voice channel", "Successful");
-		await Context.Message.ReplyAsync("Joined channel");
+		await RespondAsync("Joined channel");
 	}
 
 	private string ConvertWebMToPCM(string webmFilePath)

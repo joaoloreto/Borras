@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Borras.Common;
+using Discord;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Borras.Init;
 
@@ -34,6 +36,7 @@ public static class Bootstrapper
         where TInterface : class
     {
         _serviceCollection.AddSingleton<TInterface>(instance);
+        _ = Logger.Log(LogSeverity.Info, "Bootstrapper", instance.ToString() + " registered successfully");
         ServiceProvider = _serviceCollection.BuildServiceProvider();
     }
 }
