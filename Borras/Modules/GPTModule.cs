@@ -12,15 +12,15 @@ namespace Borras.Modules
         public async Task AskChatGPT(string arg)
         {
             
-            var bot = new ChatGpt(serializeChatGPTKey());
+            ChatGpt bot = serializeChatGPTKey();
             string response = await bot.Ask(arg);
             await RespondAsync(response);
         }
 
-        private string serializeChatGPTKey()
+        private ChatGpt serializeChatGPTKey()
         {
             string fileContents = File.ReadAllText(path + "/appsettings.json");
-            return JsonSerializer.Deserialize<JsonDocument>(fileContents).RootElement.GetProperty("Settings").GetProperty("GPTAPIKey").ToString();
+            return new ChatGpt(JsonSerializer.Deserialize<JsonDocument>(fileContents).RootElement.GetProperty("Settings").GetProperty("GPTAPIKey").ToString());
         }
     }
 }

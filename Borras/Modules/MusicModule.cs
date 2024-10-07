@@ -1,16 +1,18 @@
 ﻿using Borras.Common;
 using Discord;
 using Discord.Audio;
+using Discord.Commands;
 using Discord.Interactions;
+using Discord.WebSocket;
 using System.Diagnostics;
 using YoutubeExplode;
 using YoutubeExplode.Videos.Streams;
 
 namespace Borras.Modules;
-public class MusicModule : InteractionModuleBase<ShardedInteractionContext>
+public class MusicModule : ModuleBase<ShardedCommandContext> //InteractionModuleBase<ShardedInteractionContext>
 {
 
-	[SlashCommand("join","Have the bot join the current discord channel the user is on")]
+	[Command("join", RunMode = Discord.Commands.RunMode.Async)]
 	public async Task Join()
 	{
 		//checking if we're in a voice channel
@@ -29,17 +31,17 @@ public class MusicModule : InteractionModuleBase<ShardedInteractionContext>
 		await Logger.Log(LogSeverity.Info, $"Attempting to connect to voice channel", "Successful");
 	}
 
-	[SlashCommand("disconnect","Have the bot disconnect from the current channel it is on, requires the bot to be connected")]
+	[Command("disconnect", RunMode = Discord.Commands.RunMode.Async)]
 	public async Task Disconnect()
 	{
 		//just disconnect, no checks
 		IVoiceChannel channel = (Context.User as IVoiceState).VoiceChannel;
 		await channel.DisconnectAsync();
-		await RespondAsync("Disconnected");
+		await ReplyAsync("Disconnected");
 	}
 
 
-	[SlashCommand("play", "Join the current channel and play a youtube video as sound only")]
+	[Command("play", RunMode = Discord.Commands.RunMode.Async)]
 	public async Task PlayAsync(string videoUrl)
 	{
 		//checking to see if we're in a channel
@@ -55,7 +57,7 @@ public class MusicModule : InteractionModuleBase<ShardedInteractionContext>
 		JoinVoice();
 		await Logger.Log(LogSeverity.Info, $"Attempting to connect to voice channel", "Successful");
 
-		//create a youtubeclient objectto handle youtube requests
+		//create a youtubeclient object to handle youtube requests
 		YoutubeClient youtubeClient = new YoutubeClient();
 		await Logger.Log(LogSeverity.Info, $"get to create an object of youtube client " + youtubeClient.Videos.Streams.ToString(), "Successful");
 		//get path to the audio file and convert from opus to pcm
@@ -99,7 +101,7 @@ public class MusicModule : InteractionModuleBase<ShardedInteractionContext>
 		IAudioClient client = await channel.ConnectAsync();
 
 		await Logger.Log(LogSeverity.Info, $"Connecting to voice channel", "Successful");
-		await RespondAsync("Joined channel");
+		await ReplyAsync("Joined channel");
 	}
 
 	private string ConvertWebMToPCM(string webmFilePath)
